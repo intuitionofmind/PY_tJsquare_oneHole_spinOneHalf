@@ -85,38 +85,89 @@ def TranslationY(v):
         w[hh*subDim+n] = sign*v[l]
     return w
 
+# Input should be a array consisting of degenerate eigenvectors.
+def TransEigenVec(wfArray, fold):
+    T = np.zeros((fold, fold), dtype=complex)
+    wfArrayX = np.zeros((fold, dim), dtype=complex)
+    wfArrayXY = np.zeros((fold, dim), dtype=complex)
+    for i in range(fold):
+        for j in range(fold):
+            T[i][j] = np.vdot(wfArray[i], TranslationX(wfArray[j]))
+    wx, vx = la.eig(T) # w[i] is the eigenvalue of the corresponding vector v[:, i]
+    for i in range(fold):
+        for j in range(fold):
+            wfArrayX[i] += vx[:, i][j]*wfArray[j]
+    for i in range(fold):
+        for j in range(fold):
+            T[i][j] = np.vdot(wfArrayX[i], TranslationY(wfArrayX[j]))
+    wy, vy = la.eig(T) # w[i] is the eigenvalue of the corresponding vector v[:, i]
+    for i in range(fold):
+        for j in range(fold):
+            wfArrayXY[i] += vy[:, i][j]*wfArrayX[j]
+    return np.angle(wx), np.angle(wy), wfArrayXY
+ 
 dataDir = '/Users/wayne/Downloads/data/'
 eigValsFile = 'eigenvalues%s_size%s_J0.3_10.0_%s_BC_%s_sigma%s.dat'
 eigVecsFile = 'eigenvectors%s_size%s_J0.3_10.0_%s_BC_%s_sigma%s.dat'
 
 size = 44
+l = 0
+fold = 6
 
 paras = (numEval, size, numSam, 'PP', 'False')
 ene = LoadEigVal(os.path.join(dataDir, eigValsFile), paras)
-
-l = 0
-print(paras, l, ene[l][:40])
 wfArray = LoadEigVec(os.path.join(dataDir, eigVecsFile), paras, l)
-print(l, ene[l][:10])
 
-fold = 6
+print(l, ene[l][:fold])
 T = np.zeros((fold, fold), dtype=complex)
 for i in range(fold):
     for j in range(fold):
+        T[i][j] = np.vdot(wfArray[i], wfArray[j])
+print('original matrix')
+print(T)
+
+for i in range(fold):
+    for j in range(fold):
         T[i][j] = np.vdot(wfArray[i], TranslationX(wfArray[j]))
+        # print(i, j)
+wx, vx = la.eig(T) # w[i] is the eigenvalue of the corresponding vector v[:, i]
+print('x-translation momenta', np.angle(wx, deg=False))
+
+# To find the eigenvectors in terms of x-translation.
+wfArrayX = np.zeros((fold, dim), dtype=complex)
+for i in range(fold):
+    for j in range(fold):
+        wfArrayX[i] += vx[:, i][j]*wfArray[j]
+    print(np.angle(wx[i]), np.vdot(wfArrayX[i], wfArrayX[i]))
+
+for i in range(fold):
+    for j in range(fold):
+        T[i][j] = np.vdot(wfArrayX[i], TranslationY(wfArrayX[j]))
+        # print(i, j)
+wxy, vxy = la.eig(T) # w[i] is the eigenvalue of the corresponding vector v[:, i]
+print('y-translation momenta', np.angle(wxy, deg=False))
+
+# To find the eigenvectors in terms of x-translation.
+wfArrayXY = np.zeros((fold, dim), dtype=complex)
+for i in range(fold):
+    for j in range(fold):
+        wfArrayXY[i] += vxy[:, i][j]*wfArrayX[j]
+
+# test
+for i in range(fold):
+    for j in range(fold):
+        T[i][j] = np.vdot(wfArrayXY[i], TranslationX(wfArrayXY[j]))
         print(i, j)
-w, v = la.eig(T) # w[i] is the eigenvalue of the corresponding vector v[:, i]
-# print('TranslationX', np.around(np.angle(w, deg=True), decimals=2))
-print('Translation X', np.angle(w, deg=False))
+print('test x-translated matrix')
+print(np.absolute(T))
 
-# for i in range(6):
-    # print(i, ene[l][i])
-    # wf = wfArray[i]
+for i in range(fold):
+    for j in range(fold):
+        T[i][j] = np.vdot(wfArrayXY[i], TranslationY(wfArrayXY[j]))
+        print(i, j)
+print('test y-translated matrix')
+print(np.absolute(T))
+# wxy, vxy = la.eig(T) # w[i] is the eigenvalue of the corresponding vector v[:, i]
+# print('test x-translation momenta', np.angle(wxy, deg=False))
 
-l = 4
-wfArray = LoadEigVec(os.path.join(dataDir, eigVecsFile), paras, l)
-print(ene[l][:10])
 
-for i in range(6):
-    print(i, ene[l][i])
-    wf = wfArray[i]
