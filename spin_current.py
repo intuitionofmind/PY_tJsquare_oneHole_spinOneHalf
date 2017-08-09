@@ -164,40 +164,28 @@ numSite = numSiteX*numSiteY
 
 size = 44
 hp = 5
+l = 0
+J = 0.3
+fold = 6
 
-sites = [0, 4, 8, 9, 10, 6, 2, 1]
-sl = len(sites)
 paras = (numEval, size, numSam, 'PP', 'False')
 ene = LoadEigVal(os.path.join(dataDir, eigValsFile), paras)
+print(paras, l, ene[l][:fold])
 
-l = 0
-print(paras, l, ene[l][:40])
-wf = LoadEigVec(os.path.join(dataDir, eigVecsFile), paras, l)
-# print(np.vdot(wf[m], Transverse(wf[m])))
-for i in range(6):
-    w = wf[i]
-    print(i, ene[l][i])
-    for j in range(sl):
-        link = []
-        link.append(sites[j])
-        link.append(sites[(j+1) % sl])
-        lc = np.vdot(w, LinkSpinCurrent(w, hp, link))
-        print(link, lc)
-    # sc = np.vdot(w, SpinCurrent(w, hp))
-    # print(i, '  ', np.around(ene[l][i], decimals=10), '  ', np.around(np.imag(sc), decimals=10))
+f = './translationWaveFunction_fold%s_J%s_%s_sigma%s.npy'
+npyParas = (fold, J, 'PP', 'False')
+wfArray = np.load(f % npyParas)
 
-l = 4
-print(paras, l, ene[l][:40])
-wf = LoadEigVec(os.path.join(dataDir, eigVecsFile), paras, l)
-# print(np.vdot(wf[m], Transverse(wf[m])))
-for i in range(6):
-    w = wf[i]
-    print(i, ene[l][i])
-    for j in range(sl):
-        link = []
-        link.append(sites[j])
-        link.append(sites[(j+1) % sl])
-        lc = np.vdot(w, LinkSpinCurrent(w, hp, link))
-        print(link, lc)
-    # sc = np.vdot(w, SpinCurrent(w, hp))
-    # print(i, '  ', np.around(ene[l][i], decimals=10), '  ', np.around(np.imag(sc), decimals=10))
+# wf = LoadEigVec(os.path.join(dataDir, eigVecsFile), paras, l)
+np.set_printoptions(precision=4, suppress=True) # Only valid for printing numpy objects. 
+for i in range(fold):
+    wf = wfArray[i]
+    # print(i, ene[l][i])
+#     for j in range(sl):
+        # link = []
+        # link.append(sites[j])
+        # link.append(sites[(j+1) % sl])
+        # lc = np.vdot(w, LinkSpinCurrent(w, hp, link))
+        # print(link, lc)
+    sc = np.vdot(wf, SpinCurrent(wf, hp))
+    print(i, '  ', '%.5f'%(ene[l][i]), '  ', '%.5f'%(np.imag(sc)))
