@@ -1,0 +1,60 @@
+\documentclass[eprint]{article} %{revtex4-1}%
+\usepackage{amssymb}  % include amsfonts package
+\usepackage{amsfonts}  % American Math Society fonts, define \mathbb, \mathfrak 
+\usepackage{amsmath}  % multi-lines formulars, \cfrac
+\usepackage{amsthm}  % provide a PROOF enviroment
+\usepackage{bm}  % bold math
+\usepackage{bbm}  % hollow math
+\usepackage[colorlinks=true]{hyperref}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{bbding}
+
+\begin{document}
+
+\title{Note}
+\author{Wayne Zheng \\
+intuitionofmind@gmail.com}
+%\homepage[\HandRight\quad]{http://intuitionofmind.bitbucket.org/}
+%\affiliation{Institute for Advanced Study, Tsinghua University, Beijing, 100084, China}
+
+\maketitle
+
+\section{Translational operation}
+Suppose the square lattice is formed with $N_{x}\cdot{N}_{y}=N$ sites and they have been numbered as $k=0, \cdots, N-1$ in a certain way, for instance, a \emph{snake}. Here we choose the convention to label the number of fermionic opertors as $k=j\cdot{N_{x}}+i$, where integer pair $(i, j)$ denotes the lattice coordinates with respect to x- and y-directions. With consideration of one hole doped case, a generic basis can be defined in such a one-dimensional way
+\begin{equation}
+    c_{0\sigma_{0}}^{\dagger}\cdots{c}_{h-1\sigma_{h-1}}^{\dagger}c_{h+1\sigma_{h+1}}^{\dagger}\cdots{c}_{N-1\sigma_{N-1}}^{\dagger}|0\rangle=(-)^{h}c_{h\sigma_{h}}|s\rangle\equiv|h; s\rangle,
+    \label{}
+\end{equation}
+where $|s\rangle\equiv{c}_{0\sigma_{0}}^{\dagger}\cdots{c}_{N-1\sigma_{N-1}}^{\dagger}|0\rangle$ is the half-filled spin background created by \emph{ordered} fermionic operators. In periodic boundary condition, translational operator can be defined as
+\begin{equation}
+    \mathcal{T}_{x}c_{k\sigma_{k}}^{\dagger}\mathcal{T}_{x}^{-1}=c_{k{'}\sigma_{k}}^{\dagger},
+    \label{}
+\end{equation}
+in which $k$ and $k{'}$ correspond to the coordinate $(i, j)$ and $(i+1, j)$, respectively. Note that $i+1$ certainly takes the modulus of $N_{x}$. We are going to find what a state transformed under the operation of $\mathcal{T}_{x}$. Consider a generic basis operated by $\mathcal{T}_{x}$
+\begin{equation}
+    \mathcal{T}_{x}(-)^{h}c_{h\sigma_{h}}|s\rangle=(-)^{h}\mathcal{T}_{x}c_{h\sigma_{h}}\mathcal{T}_{x}^{-1}\mathcal{T}_{x}|s\rangle.
+    \label{<+label+>}
+\end{equation}
+In the first place we compute
+\begin{equation}
+    \begin{aligned}    
+    \mathcal{T}_{x}|s\rangle&=\mathcal{T}_{x}c_{0\sigma_{0}}^{\dagger}\cdots{c}_{N-1\sigma_{N-1}}^{\dagger}|0\rangle \\
+    &=\mathcal{T}_{x}c_{0\sigma_{0}}^{\dagger}\mathcal{T}_{x}^{-1}\cdots\mathcal{T}_{x}{c}_{N-1\sigma_{N-1}}^{\dagger}\mathcal{T}_{x}^{-1}\mathcal{T}_{x}|0\rangle \\
+    &=(-)^{(N_{x}-1)\cdot{N}_{y}}|s{'}\rangle,
+    \end{aligned}
+    \label{<+label+>}
+\end{equation}
+where the fermionic sign $(-)^{N_{x}-1}$ arises from the translational permutation of every horizontal row and there are $N_{y}$ rows. $\mathcal{T}_{x}|0\rangle=|0\rangle$ is regarded as a basic assumption. $|s{'}\rangle$ is just the corresponding translated half-filled bosonic spin configuration. Then
+\begin{equation}
+    \mathcal{T}_{x}(-)^{h}c_{h\sigma_{h}}|s\rangle=(-)^{h+(N_{x}-1)\cdot{N}_{y}}c_{h{'}\sigma_{h{'}}}|s{'}\rangle=\text{sign}\cdot(-)^{h{'}}c_{h{'}\sigma_{h{'}}}|s{'}\rangle,
+    \label{<+label+>}
+\end{equation}
+where an extra $\text{sign}=(-)^{h-h{'}+(N_{x}-1)\cdot{N}_{y}}$ must be multiplied in practical computer program. Note that $\mathcal{T}_{x}$ although does not change the spin of $c_{h\sigma_{h}}$, in the new half-filled configuration $|s{'}\rangle$, $\sigma_{h{'}}$ indeed corresponds to $\sigma_{h}$ in $|s\rangle$.
+
+The case for $\mathcal{T}_{y}$ is very similar to $\mathcal{T}_{x}$.
+
+\bibliographystyle{apsrev4-1} 
+\bibliography{noteBib}
+\end{document} 
+
